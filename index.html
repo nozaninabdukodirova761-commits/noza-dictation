@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOZA - Dictation Platform</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        .text-center { text-align: center; }
+        .brand-logo {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .input-group textarea {
+            height: 180px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .speed-btn {
+            padding: 6px 12px;
+            background: #f1f3f5;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #495057;
+            transition: 0.2s;
+        }
+        .speed-btn:hover {
+            background: #e2e6ea;
+        }
+        .speed-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #violationOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(220, 53, 69, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+        }
+        #violationOverlay h1 { font-size: 32px; margin-bottom: 10px; }
+        #violationOverlay p { font-size: 16px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Login Window -->
+    <div class="card text-center" id="loginCard">
+        <div class="brand-logo">N</div>
+        <div class="logo-text">NOZA</div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="e.g., Nozanin Abdukodirova" spellcheck="false" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Access Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="btn">Log In</button>
+        </form>
+    </div>
+
+    <!-- Dictation Test Window -->
+    <div class="card hidden" id="testCard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #333;">NOZA - Dictation Exam</h3>
+            <span id="studentNameDisplay" style="font-size: 13px; color: #667eea; font-weight: bold;"></span>
+        </div>
+
+        <!-- Audio Player & Speed Controls -->
+        <div style="margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px;">
+            <p style="font-size: 13px; margin: 0 0 8px 0; color: #555; font-weight: 600;">🎧 Dictation Audio:</p>
+            <audio id="dictAudio" controls style="width: 100%; margin-bottom: 8px;">
+                <source src="audio.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <!-- Speed Buttons -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 12px; color: #666; font-weight: 600;">Speed:</span>
+                <button type="button" class="speed-btn" onclick="setSpeed(0.5, this)">0.5x</button>
+                <button type="button" class="speed-btn" onclick="setSpeed(0.75, this)">0.75x</button>
+                <button type="button" class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x (Normal)</button>
+                <button type="button" class="speed-btn" onclick="setSpeed(1.25, this)">1.25x</button>
+            </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="input-group">
+            <label for="dictationText">Type what you hear below:</label>
+            <textarea id="dictationText" placeholder="Start typing here..." spellcheck="false"></textarea>
+        </div>
+
+        <button type="button" class="btn" onclick="submitDictation()">Finish Dictation & Save Report</button>
+    </div>
+
+    <!-- Violation Overlay -->
+    <div id="violationOverlay" class="hidden">
+        <h1>⚠ WARNING: VIOLATION DETECTED!</h1>
+        <p>You left the exam window or switched tabs. This is strictly prohibited!</p>
+        <div style="max-width: 300px; width: 100%;">
+            <input type="password" id="adminPassword" placeholder="Admin password (9999)" style="width: 100%; padding: 10px; border-radius: 6px; border: none; margin-bottom: 10px; text-align: center;">
+            <button class="btn" style="background: #333; margin-top: 0;" onclick="unlockExam()">Unlock Exam</button>
+        </div>
+    </div>
+
+    <script>
+        const loginCard = document.getElementById('loginCard');
+        const testCard = document.getElementById('testCard');
+        const violationOverlay = document.getElementById('violationOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const studentNameDisplay = document.getElementById('studentNameDisplay');
+        const dictationText = document.getElementById('dictationText');
+        const dictAudio = document.getElementById('dictAudio');
+
+        let examStarted = false;
+        let loginTime = "";
+        let violations = [];
+
+        function getCurrentTimeString() {
+            const now = new Date();
+            return now.toLocaleTimeString() + " (" + now.toLocaleDateString() + ")";
+        }
+
+        function setSpeed(rate, btn) {
+            dictAudio.playbackRate = rate;
+            const buttons = document.querySelectorAll('.speed-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+
+            if(password === "noza0908") {
+                loginCard.classList.add('hidden');
+                testCard.classList.remove('hidden');
+                studentNameDisplay.textContent = name;
+                examStarted = true;
+                loginTime = getCurrentTimeString();
+            } else {
+                alert("Incorrect password! Please try again.");
+            }
+        });
+
+        function registerViolation() {
+            if (examStarted) {
+                const violationTime = getCurrentTimeString();
+                violations.push(violationTime);
+                violationOverlay.classList.remove('hidden');
+            }
+        }
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                registerViolation();
+            }
+        });
+
+        window.addEventListener("blur", function() {
+            registerViolation();
+        });
+
+        function unlockExam() {
+            const adminPass = document.getElementById('adminPassword').value;
+            if(adminPass === "9999") {
+                violationOverlay.classList.add('hidden');
+                document.getElementById('adminPassword').value = "";
+            } else {
+                alert("Incorrect admin password!");
+            }
+        }
+
+        function submitDictation() {
+            if(!confirm("Are you sure you want to finish the dictation?")) return;
+
+            examStarted = false;
+            const studentName = studentNameDisplay.textContent;
+            const answerText = dictationText.value;
+
+            let report = "=== NOZA DICTATION EXAM REPORT ===\n\n";
+            report += "Student: " + studentName + "\n";
+            report += "Start Time: " + loginTime + "\n";
+            report += "Total Violations: " + violations.length + "\n\n";
+            
+            if (violations.length > 0) {
+                report += "Violation Timestamps:\n";
+                violations.forEach((vTime, index) => {
+                    report += (index + 1) + ". " + vTime + "\n";
+                });
+                report += "\n";
+            } else {
+                report += "Violations: None ✅\n\n";
+            }
+
+            report += "--- Student's Text (Dictation) ---\n";
+            report += answerText + "\n";
+
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = studentName.replace(/\s+/g, '_') + '_dictation_report.txt';
+            link.click();
+
+            alert("Your report has been successfully downloaded as a file!");
+            location.reload();
+        }
+    </script>
+
+</body>
+</html>
