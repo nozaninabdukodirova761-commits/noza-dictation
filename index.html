@@ -24,18 +24,13 @@
             box-sizing: border-box;
         }
         .text-center { text-align: center; }
-        .brand-logo {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
+        .brand-logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
             border-radius: 50%;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
         .logo-text {
             font-size: 22px;
@@ -126,9 +121,10 @@
 </head>
 <body>
 
-    <!-- Login Window -->
+    <!-- Kirish oynasi -->
     <div class="card text-center" id="loginCard">
-        <div class="brand-logo">N</div>
+        <!-- Logotip rasm sifatida ulandi -->
+        <img src="logo.png" alt="NOZA Logo" class="brand-logo-img">
         <div class="logo-text">NOZA</div>
         
         <form id="loginForm">
@@ -144,14 +140,14 @@
         </form>
     </div>
 
-    <!-- Dictation Test Window -->
+    <!-- Diktant imtihon oynasi -->
     <div class="card hidden" id="testCard">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="margin: 0; color: #333;">NOZA - Dictation Exam</h3>
             <span id="studentNameDisplay" style="font-size: 13px; color: #667eea; font-weight: bold;"></span>
         </div>
 
-        <!-- Audio Player & Speed Controls -->
+        <!-- Audiopleer va tezlikni boshqarish -->
         <div style="margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px;">
             <p style="font-size: 13px; margin: 0 0 8px 0; color: #555; font-weight: 600;">🎧 Dictation Audio:</p>
             <audio id="dictAudio" controls style="width: 100%; margin-bottom: 8px;">
@@ -159,7 +155,7 @@
                 Your browser does not support the audio element.
             </audio>
             
-            <!-- Speed Buttons -->
+            <!-- Tezlik tugmalari -->
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <span style="font-size: 12px; color: #666; font-weight: 600;">Speed:</span>
                 <button type="button" class="speed-btn" onclick="setSpeed(0.5, this)">0.5x</button>
@@ -169,7 +165,7 @@
             </div>
         </div>
 
-        <!-- Textarea -->
+        <!-- Matn yozish joyi -->
         <div class="input-group">
             <label for="dictationText">Type what you hear below:</label>
             <textarea id="dictationText" placeholder="Start typing here..." spellcheck="false"></textarea>
@@ -178,7 +174,7 @@
         <button type="button" class="btn" onclick="submitDictation()">Finish Dictation & Save Report</button>
     </div>
 
-    <!-- Violation Overlay -->
+    <!-- Qoidabuzarlik oynasi -->
     <div id="violationOverlay" class="hidden">
         <h1>⚠ WARNING: VIOLATION DETECTED!</h1>
         <p>You left the exam window or switched tabs. This is strictly prohibited!</p>
